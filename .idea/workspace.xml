@@ -18,7 +18,7 @@
       </list>
     </option>
   </component>
-  <component name="PhpWorkspaceProjectConfiguration">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 7.4">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/brick/math" />
       <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
@@ -152,11 +152,40 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="PHPUnit.AuthControllerTest">
+    <configuration name="AuthControllerTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="Tests\Feature\AuthControllerTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/AuthControllerTest.php" scope="Class" />
+      <method v="2" />
+    </configuration>
+    <configuration name="AuthControllerTest.test_bootstrap" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="Tests\Feature\AuthControllerTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/AuthControllerTest.php" method="test_bootstrap" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="AuthControllerTest.test_bootstrap_whenUnauthorized" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="Tests\Feature\AuthControllerTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/AuthControllerTest.php" method="test_bootstrap_whenUnauthorized" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="AuthControllerTest.test_currentUser_whenUnauthorized" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="Tests\Feature\AuthControllerTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/AuthControllerTest.php" method="test_currentUser_whenUnauthorized" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="AuthControllerTest.test_currentuser" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="Tests\Feature\AuthControllerTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/AuthControllerTest.php" method="test_currentuser" scope="Method" />
+      <method v="2" />
+    </configuration>
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner scope="XML" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="PHPUnit.AuthControllerTest" />
+        <item itemvalue="PHPUnit.AuthControllerTest.test_currentUser_whenUnauthorized" />
+        <item itemvalue="PHPUnit.AuthControllerTest.test_bootstrap_whenUnauthorized" />
+        <item itemvalue="PHPUnit.AuthControllerTest.test_bootstrap" />
+        <item itemvalue="PHPUnit.AuthControllerTest.test_currentuser" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -168,7 +197,7 @@
       <updated>1601119326338</updated>
       <workItem from="1601119327998" duration="6947000" />
       <workItem from="1602155788418" duration="8959000" />
-      <workItem from="1602228011037" duration="2422000" />
+      <workItem from="1602228011037" duration="5421000" />
     </task>
     <servers />
   </component>
@@ -176,26 +205,30 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="363" y="27" width="700" height="741" key="#PHP" timestamp="1602238118070">
+      <screen x="67" y="27" width="1299" height="741" />
+    </state>
+    <state x="363" y="27" width="700" height="741" key="#PHP/67.27.1299.741@67.27.1299.741" timestamp="1602238118070" />
     <state x="440" y="27" width="534" height="741" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1602178258564">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="440" y="27" width="534" height="741" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/67.27.1299.741@67.27.1299.741" timestamp="1602178258564" />
-    <state width="1253" height="151" key="GridCell.Tab.0.bottom" timestamp="1601129467299">
+    <state width="1253" height="207" key="GridCell.Tab.0.bottom" timestamp="1602239735436">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="151" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1601129467299" />
-    <state width="1253" height="151" key="GridCell.Tab.0.center" timestamp="1601129467299">
+    <state width="1253" height="207" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1602239735436" />
+    <state width="1253" height="207" key="GridCell.Tab.0.center" timestamp="1602239735434">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="151" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1601129467299" />
-    <state width="1253" height="151" key="GridCell.Tab.0.left" timestamp="1601129467298">
+    <state width="1253" height="207" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1602239735434" />
+    <state width="1253" height="207" key="GridCell.Tab.0.left" timestamp="1602239735432">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="151" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1601129467298" />
-    <state width="1253" height="151" key="GridCell.Tab.0.right" timestamp="1601129467299">
+    <state width="1253" height="207" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1602239735432" />
+    <state width="1253" height="207" key="GridCell.Tab.0.right" timestamp="1602239735435">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="151" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1601129467299" />
+    <state width="1253" height="207" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1602239735435" />
     <state x="379" y="89" width="672" height="678" key="search.everywhere.popup" timestamp="1602179272152">
       <screen x="67" y="27" width="1299" height="741" />
     </state>

@@ -13,8 +13,8 @@ class AuthController extends Controller
     }
 
     /* Should this function be in this class */
-    public function bootstrap(Request $request) {
-        return response()->json(['user' => $request->user()]);
+    public function bootstrap() {
+        return response()->json(['user' => Auth::user()]);
     }
 
     public function logout() {
