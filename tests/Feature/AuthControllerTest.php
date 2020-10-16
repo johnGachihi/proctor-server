@@ -9,6 +9,8 @@ use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_currentUser_whenUnauthorized()
     {
         $response = $this->json('get', 'api/me');
