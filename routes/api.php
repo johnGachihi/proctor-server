@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExamSessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,10 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('bootstrap', [AuthController::class, 'bootstrap']);
 });
 Route::get('logout', [AuthController::class, 'logout']);
+
+// Exam-session
+Route::middleware('auth:sanctum')->group(function() {
+    Route::middleware('proctor-role')->group(function() {
+        Route::post('exam-session', [ExamSessionController::class, 'create']);
+    });
+});
