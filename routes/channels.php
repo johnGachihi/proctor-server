@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+// TODO: Remove
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+    return (int)$user->id === (int)$id;
+});
+
+Broadcast::channel('signalling_message.{recipientId}', function ($user, $recipientId) {
+    return (int)$user->id === (int)$recipientId;
 });

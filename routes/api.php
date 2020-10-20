@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamSessionController;
+use App\Http\Controllers\SignallingController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
 // Auth
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('me', [AuthController::class, 'currentUser']);
@@ -27,5 +31,14 @@ Route::get('logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function() {
     Route::middleware('proctor-role')->group(function() {
         Route::post('exam-session', [ExamSessionController::class, 'create']);
+    });
+});
+
+// Signalling
+Route::middleware('auth:sanctum')->group(function() {
+    Route::prefix('signalling')->group(function() {
+        Route::post('offer', [SignallingController::class, 'offer']);
+        Route::post('answer', [SignallingController::class, 'answer']);
+        Route::post('trickleice', [SignallingController::class, 'trickleICE']);
     });
 });
