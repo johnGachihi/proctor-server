@@ -87,7 +87,9 @@ class ExamSessionControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->json('GET', 'api/check_code?code=12345');
 
-        $response->assertNotFound();
+        $response->assertJsonValidationErrors([
+            'code' => 'The selected code is invalid'
+        ]);
     }
 
     public function test__check_exam_code__when_code_exist()
