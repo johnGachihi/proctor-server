@@ -19,7 +19,8 @@ class SignallingController extends Controller
 
         $this->broadcastMessage(
             $request->signalling_message,
-            $request->recipient_id
+            $request->recipient_id,
+            $request->user()
         );
     }
 
@@ -32,7 +33,8 @@ class SignallingController extends Controller
 
         $this->broadcastMessage(
             $request->signalling_message,
-            $request->recipient_id
+            $request->recipient_id,
+            $request->user()
         );
     }
 
@@ -45,14 +47,19 @@ class SignallingController extends Controller
 
         $this->broadcastMessage(
             $request->signalling_message,
-            $request->recipient_id
+            $request->recipient_id,
+            $request->user()
         );
     }
 
-    private function broadcastMessage($signallingMessage, $recipient_id)
+    private function broadcastMessage($signallingMessage, $recipient_id, User $sender)
     {
         $recipient = User::find($recipient_id);
-        $event = new SignallingMessageSent($signallingMessage, $recipient);
+        $event = new SignallingMessageSent(
+            $signallingMessage,
+            $recipient,
+            $sender
+        );
         broadcast($event);
     }
 }

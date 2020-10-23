@@ -99,6 +99,7 @@ class SignallingControllerTest extends TestCase
 
         Event::assertDispatched(function (SignallingMessageSent $event) {
             return $event->recipient->id === $this->offer_recipient->id
+                && $event->sender->id === $this->user->id
                 && $event->signallingMessage === $this->signalling_message;
         });
     }
@@ -147,10 +148,11 @@ class SignallingControllerTest extends TestCase
     public function test__answer__dispatches_broadcast_event()
     {
         $this->actingAs($this->user)
-            ->json('post','api/signalling/answer', $this->valid_answer_request_params);
+            ->json('post', 'api/signalling/answer', $this->valid_answer_request_params);
 
         Event::assertDispatched(function (SignallingMessageSent $event) {
             return $event->recipient->id === $this->answer_recipient->id
+                && $event->sender->id === $this->user->id
                 && $event->signallingMessage === $this->signalling_message;
         });
     }
@@ -188,11 +190,12 @@ class SignallingControllerTest extends TestCase
     public function test__trickleICE__dispatches_broadcast_event()
     {
         $this->actingAs($this->user)
-            ->json('post','api/signalling/trickleice',
+            ->json('post', 'api/signalling/trickleice',
                 $this->valid_answer_request_params);
 
         Event::assertDispatched(function (SignallingMessageSent $event) {
             return $event->recipient->id === $this->answer_recipient->id
+                && $event->sender->id === $this->user->id
                 && $event->signallingMessage === $this->signalling_message;
         });
     }

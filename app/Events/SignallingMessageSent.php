@@ -17,10 +17,12 @@ class SignallingMessageSent implements ShouldBroadcast
 
     public $signallingMessage;
     public $recipient;  // TODO: Should the User of id of user be broadcast
+    public $sender;
 
-    public function __construct(array $signallingMessage, User $recipient)
+    public function __construct(array $signallingMessage, User $recipient, User $sender)
     {
         $this->recipient = $recipient;
+        $this->sender = $sender;
         $this->signallingMessage = $signallingMessage;
     }
 
