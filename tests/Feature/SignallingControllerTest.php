@@ -2,7 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Events\PeerConnectionAnswer;
+use App\Events\PeerConnectionICE;
+use App\Events\PeerConnectionOffer;
 use App\Events\SignallingMessageSent;
+use App\Models\ExamSession;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -64,43 +68,48 @@ class SignallingControllerTest extends TestCase
             ->json('post', 'api/signalling/offer');
 
         $response->assertJsonValidationErrors([
-            'recipient_id' => 'The recipient id field is required',
-            'signalling_message' => 'The signalling message field is required'
+            'offer' => 'The offer field is required',
+            'exam_code' => 'The exam code field is required',
         ]);
     }
 
-    public function test__offer__validates_recipient_id_must_be_of_proctor()
+    public function test__offer__validates_exam_code_param_exists()
     {
         $response = $this->actingAs($this->user)
-            ->json('post', 'api/signalling/offer', [
-                'recipient_id' => 2,
-            ]);
+            ->json('post', 'api/signalling/offer', ['exam_code' => 12345]);
 
         $response->assertJsonValidationErrors([
-            'recipient_id' => 'The recipient should be a proctor'
+            'exam_code' => 'The selected exam code is invalid',
         ]);
     }
 
     public function test__offer__with_valid_request_params()
     {
-        $response = $this->actingAs($this->user)->json(
-            'post', 'api/signalling/offer', $this->valid_offer_request_params);
+        $examSession = ExamSession::factory()->create();
+
+        $response = $this->actingAs($this->user)->json('post', 'api/signalling/offer', [
+            'exam_code' => $examSession->code,
+            'offer' => ['foo' => 'bar'],
+        ]);
 
         $response->assertJsonMissingValidationErrors([
-            'recipient_id', 'signalling_message'
+            'exam_code', 'offer'
         ]);
-        $response->assertOk();
     }
 
     public function test__offer__dispatches_broadcast_event()
     {
-        $this->actingAs($this->user)->json(
-            'post', 'api/signalling/offer', $this->valid_offer_request_params);
+        $examCode = ExamSession::factory()->create()->code;
+        $offer = ['offer' => 'offer'];
 
-        Event::assertDispatched(function (SignallingMessageSent $event) {
-            return $event->recipient->id === $this->offer_recipient->id
-                && $event->sender->id === $this->user->id
-                && $event->signallingMessage === $this->signalling_message;
+        $this->actingAs($this->user)->json('post', 'api/signalling/offer', [
+            'exam_code' => $examCode,
+            'offer' => $offer,
+        ]);
+
+        Event::assertDispatched(function (PeerConnectionOffer $event) use ($examCode, $offer) {
+            return (string) $event->examCode === (string) $examCode
+                && $event->offer === $offer;
         });
     }
 
@@ -117,86 +126,99 @@ class SignallingControllerTest extends TestCase
             ->json('post', 'api/signalling/answer');
 
         $response->assertJsonValidationErrors([
-            'recipient_id' => 'The recipient id field is required',
-            'signalling_message' => 'The signalling message field is required'
+            'answer' => 'The answer field is required',
+            'candidate_id' => 'The candidate id field is required'
         ]);
     }
 
     public function test__answer__validates_recipient_id_must_be_of_candidate()
     {
         $response = $this->actingAs($this->user)
-            ->json('post', 'api/signalling/answer', [
-                'recipient_id' => 2,
-            ]);
+            ->json('post', 'api/signalling/answer', ['candidate_id' => 2]);
 
         $response->assertJsonValidationErrors([
-            'recipient_id' => 'The recipient should be a candidate'
-        ]);
+            'candidate_id' => 'The recipient should be a candidate']);
     }
 
     public function test__answer__with_valid_request_params()
     {
-        $response = $this->actingAs($this->user)->json(
-            'post', 'api/signalling/answer', $this->valid_answer_request_params);
+        $answer = ['foo' => 'bar'];
+        $candidate_id = User::factory()->create()->id;
 
-        $response->assertJsonMissingValidationErrors([
-            'recipient_id', 'signalling_message'
-        ]);
-        $response->assertOk();
+        $response = $this
+            ->actingAs($this->user)
+            ->json('post', 'api/signalling/answer', [
+                'answer' => $answer, 'candidate_id' => $candidate_id
+            ]);
+
+        $response->assertJsonMissingValidationErrors(['candidate_id', 'answer']);
     }
 
     public function test__answer__dispatches_broadcast_event()
     {
-        $this->actingAs($this->user)
-            ->json('post', 'api/signalling/answer', $this->valid_answer_request_params);
+        $answer = ['foo' => 'bar'];
+        $candidate_id = User::factory()->create()->id;
 
-        Event::assertDispatched(function (SignallingMessageSent $event) {
-            return $event->recipient->id === $this->answer_recipient->id
-                && $event->sender->id === $this->user->id
-                && $event->signallingMessage === $this->signalling_message;
+        $this->actingAs($this->user)->json('post', 'api/signalling/answer', [
+            'answer' => $answer, 'candidate_id' => $candidate_id
+        ]);
+
+        Event::assertDispatched(function (PeerConnectionAnswer $event) use ($answer, $candidate_id) {
+            return $event->candidate_id === $candidate_id
+                && $event->answer === $answer;
         });
     }
 
-    public function test__trickleICE__when_unauthenticated()
+    public function test__ice_candidate__when_unauthenticated()
     {
-        $response = $this->json('post', 'api/signalling/trickleice');
+        $response = $this->json('post', 'api/signalling/ice-candidate');
 
         $response->assertUnauthorized();
     }
 
-    public function test__trickleICE__validates_request_param_checks_not_null()
+    public function test__ice_candidate__validates_request_param_checks_not_null()
     {
         $response = $this->actingAs($this->user)
-            ->json('post', 'api/signalling/trickleice');
+            ->json('post', 'api/signalling/ice-candidate');
 
         $response->assertJsonValidationErrors([
             'recipient_id' => 'The recipient id field is required',
-            'signalling_message' => 'The signalling message field is required'
+            'ice' => 'The ice field is required'
         ]);
     }
 
-    public function test__trickleice__with_valid_request_params()
+    public function test__ice_candidate__with_valid_request_params()
     {
-        $response = $this->actingAs($this->user)->json(
-            'post', 'api/signalling/trickleice',
-            $this->valid_answer_request_params);
+        $recipient_id = User::factory()->create()->id;
+        $ice = ['foo' => 'bar'];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->json('post', 'api/signalling/ice-candidate', [
+                'recipient_id' => $recipient_id,
+                'ice' => $ice
+            ]);
 
         $response->assertJsonMissingValidationErrors([
-            'recipient_id', 'signalling_message'
+            'recipient_id', 'ice'
         ]);
         $response->assertOk();
     }
 
-    public function test__trickleICE__dispatches_broadcast_event()
+    public function test__ice_candidate__dispatches_broadcast_event()
     {
-        $this->actingAs($this->user)
-            ->json('post', 'api/signalling/trickleice',
-                $this->valid_answer_request_params);
+        $recipient_id = User::factory()->create()->id;
+        $ice = ['foo' => 'bar'];
 
-        Event::assertDispatched(function (SignallingMessageSent $event) {
-            return $event->recipient->id === $this->answer_recipient->id
-                && $event->sender->id === $this->user->id
-                && $event->signallingMessage === $this->signalling_message;
+        $this->actingAs($this->user)->json('post', 'api/signalling/ice-candidate', [
+            'recipient_id' => $recipient_id,
+            'ice' => $ice
+        ]);
+
+        Event::assertDispatched(function (PeerConnectionICE $event) use ($ice, $recipient_id) {
+            return $event->recipient_id === $recipient_id
+                && $event->sender_id === $this->user->id
+                && $event->ice === $ice;
         });
     }
 }

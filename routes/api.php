@@ -40,6 +40,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('signalling')->group(function() {
         Route::post('offer', [SignallingController::class, 'offer']);
         Route::post('answer', [SignallingController::class, 'answer']);
-        Route::post('trickleice', [SignallingController::class, 'trickleICE']);
+        Route::post('ice-candidate', [SignallingController::class, 'iceCandidate']);
     });
 });

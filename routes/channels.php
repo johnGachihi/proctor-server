@@ -14,10 +14,23 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 // TODO: Remove
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int)$user->id === (int)$id;
+Broadcast::channel('signalling_message.{recipientId}', function ($user, $recipientId) {
+    if ((int)$user->id === (int)$recipientId) {
+        return $user;
+    }
+    return null;
 });
 
-Broadcast::channel('signalling_message.{recipientId}', function ($user, $recipientId) {
-    return (int)$user->id === (int)$recipientId;
+Broadcast::channel('candidate.{candidateId}', function ($user, $candidateId) {
+    return (int)$user->id === (int)$candidateId
+        && $user->role === 'candidate';
+});
+
+Broadcast::channel('proctors.{examCode}', function ($user) {
+    return $user->role === 'proctor' ? $user : null;
+});
+
+Broadcast::channel('proctor.{proctorId}', function ($user, $proctorId) {
+    return (int) $user->id === (int) $proctorId
+        && $user->role === 'proctor';
 });
