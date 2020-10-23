@@ -27,4 +27,13 @@ class ExamSessionController extends Controller
 
         return $exam_session;
     }
+
+    public function checkCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required'
+        ]);
+
+        ExamSession::where('code', $request->code)->firstOrFail();
+    }
 }

@@ -62,4 +62,42 @@ class ExamSessionControllerTest extends TestCase
         $examSession = ExamSession::find(1);
         $response->assertJson($examSession->toArray());
     }
+
+    public function test__check_exam_code__when_unauthorized()
+    {
+        $response = $this->json('GET', 'api/check_code?code=123456');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test__check_exam_code__validation_checks_code_param_available()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)
+            ->json('GET', 'api/check_code');
+
+        $response->assertJsonValidationErrors([
+            'code' => 'The code field is required'
+        ]);
+    }
+
+    public function test__check_exam_code__when_code_does_not_exist()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)
+            ->json('GET', 'api/check_code?code=12345');
+
+        $response->assertNotFound();
+    }
+
+    public function test__check_exam_code__when_code_exist()
+    {
+        $examSession = ExamSession::factory()->create();
+
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)
+            ->json('GET', 'api/check_code?code=' . $examSession->code);
+
+        $response->assertOk();
+    }
 }

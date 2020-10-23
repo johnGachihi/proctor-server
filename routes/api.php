@@ -29,6 +29,7 @@ Route::get('logout', [AuthController::class, 'logout']);
 
 // Exam-session
 Route::middleware('auth:sanctum')->group(function() {
+    Route::get('check_code', [ExamSessionController::class, 'checkCode']);
     Route::middleware('proctor-role')->group(function() {
         Route::post('exam-session', [ExamSessionController::class, 'create']);
     });
