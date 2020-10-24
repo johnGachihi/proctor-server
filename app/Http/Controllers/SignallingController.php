@@ -20,7 +20,11 @@ class SignallingController extends Controller
             'offer' => 'required',
         ]);
 
-        broadcast(new PeerConnectionOffer($request->exam_code, $request->offer));
+        $event = new PeerConnectionOffer(
+            $request->exam_code,
+            $request->offer,
+            $request->user()->id);
+        broadcast($event);
     }
 
     public function answer(Request $request)
@@ -30,7 +34,11 @@ class SignallingController extends Controller
             'answer' => 'required'
         ]);
 
-        broadcast(new PeerConnectionAnswer((int) $request->candidate_id, $request->answer));
+        $event = new PeerConnectionAnswer(
+            (int) $request->candidate_id,
+            $request->answer,
+            $request->user()->id);
+        broadcast($event);
     }
 
     public function iceCandidate(Request $request)

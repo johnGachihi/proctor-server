@@ -16,11 +16,13 @@ class PeerConnectionAnswer
 
     public $candidate_id;
     public $answer;
+    public $senderId;
 
-    public function __construct(int $candidate_id, array $answer)
+    public function __construct(int $candidate_id, array $answer, int $senderId)
     {
         $this->candidate_id = $candidate_id;
         $this->answer = $answer;
+        $this->senderId = $senderId;
     }
 
     /**

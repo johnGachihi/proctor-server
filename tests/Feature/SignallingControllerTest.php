@@ -109,7 +109,8 @@ class SignallingControllerTest extends TestCase
 
         Event::assertDispatched(function (PeerConnectionOffer $event) use ($examCode, $offer) {
             return (string) $event->examCode === (string) $examCode
-                && $event->offer === $offer;
+                && $event->offer === $offer
+                && $event->senderId === $this->user->id;
         });
     }
 
@@ -165,7 +166,8 @@ class SignallingControllerTest extends TestCase
 
         Event::assertDispatched(function (PeerConnectionAnswer $event) use ($answer, $candidate_id) {
             return $event->candidate_id === $candidate_id
-                && $event->answer === $answer;
+                && $event->answer === $answer
+                && $event->senderId === $this->user->id;
         });
     }
 

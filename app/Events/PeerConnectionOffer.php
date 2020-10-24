@@ -10,17 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PeerConnectionOffer
+class PeerConnectionOffer implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $examCode;
     public $offer;
+    public $senderId;
 
-    public function __construct(string $examCode, array $offer)
+    public function __construct(string $examCode, array $offer, int $senderId)
     {
         $this->examCode = $examCode;
         $this->offer = $offer;
+        $this->senderId = $senderId;
     }
 
     /**
