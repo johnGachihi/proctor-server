@@ -17,12 +17,14 @@ class PeerConnectionOffer implements ShouldBroadcast
     public $examCode;
     public $offer;
     public $senderId;
+    public $recipientId;
 
-    public function __construct(string $examCode, array $offer, int $senderId)
+    public function __construct(string $examCode, array $offer, int $senderId, int $recipientId)
     {
         $this->examCode = $examCode;
         $this->offer = $offer;
         $this->senderId = $senderId;
+        $this->recipientId = $recipientId;
     }
 
     /**
@@ -32,6 +34,6 @@ class PeerConnectionOffer implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('proctors.' . $this->examCode);
+        return new PresenceChannel('exam.' . $this->examCode);
     }
 }

@@ -14,15 +14,17 @@ class PeerConnectionICE implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $recipient_id;
-    public $sender_id;
+    public $recipientId;
+    public $senderId;
     public $ice;
+    public $examCode;
 
-    public function __construct(int $recipient_id, int $sender_id, array $ice)
+    public function __construct(string $examCode, array $ice, int $senderId, int $recipientId)
     {
-        $this->recipient_id = $recipient_id;
-        $this->sender_id = $sender_id;
+        $this->recipientId = $recipientId;
+        $this->senderId = $senderId;
         $this->ice = $ice;
+        $this->examCode = $examCode;
     }
 
     /**
@@ -32,10 +34,6 @@ class PeerConnectionICE implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        $channel_prefix = User::find($this->recipient_id)->role === 'proctor'
-            ? 'proctor'
-            : 'candidate';
-
-        return new PrivateChannel($channel_prefix . '.' . $this->recipient_id);
+        return new PresenceChannel('exam.' . $this->examCode);
     }
 }

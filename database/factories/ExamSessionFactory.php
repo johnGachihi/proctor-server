@@ -23,7 +23,7 @@ class ExamSessionFactory extends Factory
     public function definition()
     {
         return [
-            'code' => $this->faker->unique()->randomNumber(5),
+            'code' => $this->faker->unique()->bothify('#?#?#'),
             'started_by' => User::factory()->proctor()
         ];
     }

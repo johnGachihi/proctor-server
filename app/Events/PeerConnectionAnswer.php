@@ -14,15 +14,17 @@ class PeerConnectionAnswer implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $candidate_id;
+    public $recipientId;
     public $answer;
     public $senderId;
+    public $examCode;
 
-    public function __construct(int $candidate_id, array $answer, int $senderId)
+    public function __construct(string $examCode, array $answer, int $senderId, int $recipientId)
     {
-        $this->candidate_id = $candidate_id;
+        $this->recipientId = $recipientId;
         $this->answer = $answer;
         $this->senderId = $senderId;
+        $this->examCode = $examCode;
     }
 
     /**
@@ -32,6 +34,6 @@ class PeerConnectionAnswer implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('candidate.' . $this->candidate_id);
+        return new PresenceChannel('exam.' . $this->examCode);
     }
 }

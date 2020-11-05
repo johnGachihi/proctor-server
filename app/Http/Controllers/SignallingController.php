@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\PeerConnectionAnswer;
 use App\Events\PeerConnectionICE;
 use App\Events\PeerConnectionOffer;
-use App\Events\SignallingMessageSent;
-use App\Models\User;
 use App\Rules\IsCandidate;
 use App\Rules\IsProctor;
 use Illuminate\Http\Request;
@@ -18,26 +16,32 @@ class SignallingController extends Controller
         $request->validate([
             'exam_code' => ['required', 'exists:exam_sessions,code'],
             'offer' => 'required',
+            'recipient_id' => ['required', 'exists:users,id']
         ]);
 
         $event = new PeerConnectionOffer(
             $request->exam_code,
             $request->offer,
-            $request->user()->id);
+            $request->user()->id,
+            $request->recipient_id
+        );
         broadcast($event);
     }
 
     public function answer(Request $request)
     {
         $request->validate([
-            'candidate_id' => ['bail', 'required', new IsCandidate()],
-            'answer' => 'required'
+            'answer' => 'required',
+            'recipient_id' => ['bail', 'required', new IsCandidate()],
+            'exam_code' => ['required', 'exists:exam_sessions,code']
         ]);
 
         $event = new PeerConnectionAnswer(
-            (int) $request->candidate_id,
+            $request->exam_code,
             $request->answer,
-            $request->user()->id);
+            $request->user()->id,
+            (int) $request->recipient_id,
+        );
         broadcast($event);
     }
 
@@ -45,10 +49,16 @@ class SignallingController extends Controller
     {
         $request->validate([
             'recipient_id' => 'required',
-            'ice' => 'required'
+            'ice' => 'required',
+            'exam_code' => ['required', 'exists:exam_sessions,code']
         ]);
 
-        broadcast(new PeerConnectionICE(
-            (int) $request->recipient_id, $request->user()->id, $request->ice));
+        $event = new PeerConnectionICE(
+            $request->exam_code,
+            $request->ice,
+            $request->user()->id,
+            (int)$request->recipient_id
+        );
+        broadcast($event);
     }
 }
