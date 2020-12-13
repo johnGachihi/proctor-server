@@ -160,13 +160,13 @@ class SignallingControllerTest extends TestCase
             'exam_code' => 'The selected exam code is invalid']);
     }
 
-    public function test__answer__validates_recipient_id_must_be_of_candidate()
+    public function test__answer__validates_recipient_id_is_of_valid_user()
     {
         $response = $this->actingAs($this->user)
             ->json('post', 'api/signalling/answer', ['recipient_id' => 12345]);
 
         $response->assertJsonValidationErrors([
-            'recipient_id' => 'The recipient should be a candidate']);
+            'recipient_id' => 'The selected recipient id is invalid']);
     }
 
     public function test__answer__with_valid_request_params()

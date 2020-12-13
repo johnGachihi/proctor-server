@@ -32,7 +32,7 @@ class SignallingController extends Controller
     {
         $request->validate([
             'answer' => 'required',
-            'recipient_id' => ['bail', 'required', new IsCandidate()],
+            'recipient_id' => ['required', 'exists:users,id'],
             'exam_code' => ['required', 'exists:exam_sessions,code']
         ]);
 
