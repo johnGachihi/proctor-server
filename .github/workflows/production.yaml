@@ -65,8 +65,9 @@ jobs:
             fi
 
             # Unzip new source code then clean up
-            unzip -o src.zip -d src
-            # rm src.zip
+            unzip -oq src.zip -d src
+            rm src.zip
+            ls src
             # cd src
             # mv src/* src/.[!.]* .
             # rm -r src
