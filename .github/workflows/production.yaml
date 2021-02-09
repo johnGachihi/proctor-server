@@ -27,8 +27,7 @@ jobs:
         run: vendor/bin/phpunit tests
 
       - name: Compress source code
-        # Excluding storage directory - why?
-        run: zip -r src.zip . -x '*storage*'
+        run: zip -r src.zip .
 
       - name: Transfer source code to server
         uses: appleboy/scp-action@master
@@ -65,13 +64,8 @@ jobs:
             fi
 
             # Unzip new source code then clean up
-            unzip -oq src.zip -d src
+            unzip -qo src.zip -d src
             rm src.zip
-            ls src
-            # cd src
-            # mv src/* src/.[!.]* .
-            # rm -r src
-            # cd ..
 
             # Copy .env file to source code
             cp env/.env src
