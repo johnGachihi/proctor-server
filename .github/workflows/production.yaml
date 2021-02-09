@@ -66,11 +66,11 @@ jobs:
 
             # Unzip new source code then clean up
             unzip -o src.zip -d src
-#            rm src.zip
-#            cd src
-#            mv src/* src/.[!.]* .
-#            rm -r src
-#            cd ..
+            # rm src.zip
+            # cd src
+            # mv src/* src/.[!.]* .
+            # rm -r src
+            # cd ..
 
             # Copy .env file to source code
             cp env/.env src
