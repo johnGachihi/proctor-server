@@ -31,7 +31,7 @@ jobs:
         run: zip -r src.zip . -x '*storage*'
 
       - name: Transfer source code to server
-        uses: appleboy/scp-action:master
+        uses: appleboy/scp-action@master
         with:
           source: src.zip
           target: proctor.johngachihi.com/api
