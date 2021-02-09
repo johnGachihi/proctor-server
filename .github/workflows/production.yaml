@@ -1,0 +1,76 @@
+name: Production workflow
+
+on:
+  push:
+    branches:
+      - ci  #TODO: Replace with main when done creating workflow
+    paths-ignore:
+      - '.editorconfig'
+      - '.env.example'
+      - '.gitattributes'
+      - '.gitignore'
+      - '.phpunit.result.cache'
+      - '.styleci.yml'
+      - 'LICENSE'
+      - 'README.md'
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install composer dependencies
+        run: composer install
+
+      - name: Run tests
+        run: vendor/bin/phpunit tests
+
+      - name: Compress source code
+        # Excluding storage directory - why?
+        run: zip -r src.zip . -x '*storage*'
+
+      - name: Transfer source code to server
+        uses: appleboy/scp-action:master
+        with:
+          source: src.zip
+          target: proctor.johngachihi.com/api
+          host: johngachihi.com
+          username: ${{ secrets.HOST_USERNAME }}
+          port: ${{ secrets.HOST_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+
+      - name: Extract source code in server
+        uses: appleboy/ssh-action@master
+        with:
+          host: johngachihi.com
+          username: ${{ secrets.HOST_USERNAME }}
+          port: ${{ secrets.HOST_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd proctor.johngachihi.com/api
+
+            # Compress previous working code
+            if [ -d "src" ]; then
+              zip -rmT src-$(date +"%s").zip src
+            fi
+
+            # Delete oldest backup if there are more than four
+            if ls src-*.zip; then
+              if [ $(ls src-*.zip | wc -l) -gt 4 ]; then
+                rm $(ls src-*.zip | head -1);
+              fi
+            fi
+
+            # Unzip new source code then clean up
+            unzip -o src.zip -d src
+            rm src.zip
+            cd src
+            mv src/* src/.[!.]* .
+            rm -r src
+            cd ..
+
+            # Copy .env file to source code
+            cp env/.env src
